@@ -1,0 +1,54 @@
+---
+const year = new Date().getFullYear();
+const tags = ['Freelance Network', 'Brand Identity', 'Web Design', 'Product Design', 'Motion', 'Strategy', 'Development', 'Editorial', 'Community', 'Craft', 'Dialogue', 'Independent work'];
+---
+<footer id="contact" style="background-color: var(--color-foreground); color: var(--color-background)">
+  <div class="container py-24 md:py-32">
+    <a href="mailto:hello@dividui.studio" class="group block font-light tracking-tighter leading-[0.85] text-[clamp(4rem,18vw,22rem)] hover:opacity-60 transition-opacity">
+      <span class="block">Let&rsquo;s</span>
+      <span class="block pl-[10%]">talk &rarr;</span>
+    </a>
+
+    <div class="mt-20 grid md:grid-cols-4 gap-10 border-t pt-10" style="border-color: rgba(255,255,255,0.15)">
+      <div>
+        <p class="font-mono text-xs uppercase tracking-widest mb-3" style="color: rgba(255,255,255,0.4)">Location</p>
+        <p class="text-xl">Milano</p>
+        <p class="text-sm" style="color: rgba(255,255,255,0.6)">Italia</p>
+      </div>
+      <div>
+        <p class="font-mono text-xs uppercase tracking-widest mb-3" style="color: rgba(255,255,255,0.4)">Contact</p>
+        <a href="mailto:hello@dividui.studio" class="text-xl hover:opacity-60 transition-opacity">hello@dividui.studio</a>
+      </div>
+      <div>
+        <p class="font-mono text-xs uppercase tracking-widest mb-3" style="color: rgba(255,255,255,0.4)">Social</p>
+        <ul class="space-y-1">
+          <li><a href="https://instagram.com/dividui.studio" class="hover:opacity-60 transition-opacity">Instagram</a></li>
+          <li><a href="https://www.linkedin.com/company/dividui-studio" class="hover:opacity-60 transition-opacity">LinkedIn</a></li>
+          <li><a href="https://www.behance.net/dividuistudio" class="hover:opacity-60 transition-opacity">Behance</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="font-mono text-xs uppercase tracking-widest mb-3" style="color: rgba(255,255,255,0.4)">Legal</p>
+        <ul class="space-y-1">
+          <li><a href="#" class="hover:opacity-60 transition-opacity">Note legali</a></li>
+          <li><a href="#" class="hover:opacity-60 transition-opacity">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-t overflow-hidden py-6" style="border-color: rgba(255,255,255,0.15)">
+    <div class="flex gap-12 whitespace-nowrap animate-marquee-slow w-max">
+      {[...tags, ...tags, ...tags].map((t, i) => (
+        <span class="text-2xl" style="color: rgba(255,255,255,0.3)">
+          {t} <span style="color: var(--color-accent); margin: 0 1rem">/</span>
+        </span>
+      ))}
+    </div>
+  </div>
+
+  <div class="container py-6 flex flex-col md:flex-row justify-between gap-2 text-xs font-mono uppercase tracking-widest" style="color: rgba(255,255,255,0.3)">
+    <span>&copy; {year} Dividui® Studio</span>
+    <span>Freelance Network &mdash; Milano</span>
+  </div>
+</footer>

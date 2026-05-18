@@ -1,0 +1,70 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Footer from '../components/Footer.astro';
+
+const projects = [
+  {
+    title: 'The Blue Edit',
+    category: 'Brand Identity',
+    year: '2024',
+    description: 'A visual capsule played entirely in shades of blue — the colour of depth, calm, and the infinite.',
+    accent: '#1a3a5c',
+  },
+  {
+    title: 'Forma Libera',
+    category: 'Editorial Design',
+    year: '2024',
+    description: 'An editorial project exploring the relationship between white space and typography — between silence and voice.',
+    accent: '#2e2e2e',
+  },
+  {
+    title: 'Orizzonte',
+    category: 'Digital Product',
+    year: '2023',
+    description: 'A digital platform connecting independent creatives with brands in search of authenticity.',
+    accent: '#3d2b1f',
+  },
+];
+---
+
+<Layout
+  title="Projects — Dividui® Studio"
+  description="Selected work by Dividui® Studio. Brand identity, editorial design, and digital products — made with craft and intention."
+>
+  <section class="pt-40 pb-24">
+    <div class="container">
+      <p class="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">/ Selected work</p>
+      <h1 class="font-light tracking-tighter text-[clamp(3rem,8vw,7rem)] leading-none mb-20">Projects</h1>
+    </div>
+
+    {projects.map((p, i) => (
+      <div class="border-t border-border">
+        <div class="container py-16 md:py-24">
+          <div class="grid md:grid-cols-12 gap-8 items-start">
+            <div class="md:col-span-1 text-sm text-muted-foreground font-mono">{String(i + 1).padStart(2, '0')}</div>
+
+            <div class="md:col-span-3">
+              <h2 class="font-light text-3xl md:text-4xl tracking-tight mb-3">{p.title}</h2>
+              <p class="text-sm text-muted-foreground mb-1">{p.category}</p>
+              <p class="text-sm text-muted-foreground">{p.year}</p>
+              <p class="mt-6 text-base leading-relaxed text-muted-foreground max-w-xs">{p.description}</p>
+              <a href="#" class="inline-flex items-center gap-2 mt-8 text-sm font-medium border-b border-foreground pb-0.5 hover:opacity-50 transition-opacity">
+                View project <span aria-hidden>&rarr;</span>
+              </a>
+            </div>
+
+            <div class="md:col-span-8 grid grid-cols-12 gap-4 items-end">
+              <div class="col-span-4 aspect-[3/4]" style={`background-color: ${p.accent}18`}></div>
+              <div class="col-span-8 aspect-[4/3]" style={`background-color: ${p.accent}10`}></div>
+              <div class="col-span-5 col-start-4 aspect-square -mt-12" style={`background-color: ${p.accent}14`}></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    ))}
+
+    <div class="border-t border-border"></div>
+  </section>
+
+  <Footer />
+</Layout>

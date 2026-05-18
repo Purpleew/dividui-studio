@@ -1,0 +1,135 @@
+---
+---
+<section class="relative min-h-screen flex items-center overflow-hidden py-4">
+  <div id="hero-canvas" class="absolute inset-0 opacity-40"></div>
+
+  <div class="container relative z-10 mt-12">
+    <h1 class="font-light leading-[0.85] tracking-tighter text-[clamp(3rem,12vw,13rem)] text-balance">
+      <span class="block">A creative studio</span>
+      <span class="block">where dialogue creates</span>
+      <span class="relative inline-flex items-baseline gap-4">
+        <span id="typewriter" class="font-normal italic"></span>
+        <span class="inline-block w-2 h-[0.7em] animate-pulse" style="background-color: var(--color-accent)"></span>
+      </span>
+    </h1>
+
+    <div class="mt-12 md:mt-20 grid md:grid-cols-2 gap-6 md:gap-8 items-end">
+      <p class="text-lg md:text-xl leading-snug text-balance max-w-xl" style="color: color-mix(in oklab, var(--color-foreground) 70%, transparent)">
+        Dividui® is an independent studio born from the encounter of freelances —
+        a continuous dialogue between independent minds, shaping ideas into value.
+      </p>
+      <div class="flex flex-wrap gap-3 md:justify-end">
+        <a href="#work" class="inline-flex items-center gap-2 px-6 h-12 rounded-full text-sm font-medium hover:opacity-80 transition-opacity" style="background-color: var(--color-foreground); color: var(--color-background)">
+          See our work &rarr;
+        </a>
+        <a href="#contact-form" class="inline-flex items-center gap-2 px-6 h-12 rounded-full border text-sm font-medium hover:opacity-60 transition-opacity" style="border-color: color-mix(in oklab, var(--color-foreground) 20%, transparent)">
+          Let&rsquo;s talk
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import * as THREE from 'three';
+  import { AsciiEffect } from 'three/addons/effects/AsciiEffect.js';
+
+  const words = ['value.', 'form.', 'craft.', 'meaning.'];
+  const el = document.getElementById('typewriter')!;
+  let wordIdx = 0;
+  let running = true;
+
+  const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
+  const jitter = (base: number, spread: number) => base + (Math.random() - 0.5) * spread;
+
+  (async () => {
+    await sleep(600);
+    while (running) {
+      const word = words[wordIdx % words.length];
+      for (let i = 0; i <= word.length && running; i++) {
+        el.textContent = word.slice(0, i);
+        const delay = i === 0 ? jitter(180, 80) : i === word.length ? jitter(140, 60) : jitter(110, 70);
+        await sleep(delay);
+      }
+      await sleep(jitter(2200, 400));
+      for (let i = word.length; i >= 0 && running; i--) {
+        el.textContent = word.slice(0, i);
+        await sleep(jitter(55, 25));
+      }
+      await sleep(jitter(300, 100));
+      wordIdx++;
+    }
+  })();
+
+  const wrap = document.getElementById('hero-canvas')!;
+  const w = wrap.offsetWidth;
+  const h = wrap.offsetHeight;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, w / h, 1, 2000);
+  camera.position.z = 600;
+
+  const sphere = new THREE.Mesh(
+    new THREE.SphereGeometry(250, 20, 20),
+    new THREE.MeshPhongMaterial({ color: 0xffffff, flatShading: true })
+  );
+  scene.add(sphere);
+
+  const light1 = new THREE.PointLight(0xffffff, 4, 0, 0);
+  light1.position.set(300, 300, 300);
+  scene.add(light1);
+  const light2 = new THREE.PointLight(0xffffff, 2, 0, 0);
+  light2.position.set(-300, -200, -300);
+  scene.add(light2);
+  scene.add(new THREE.AmbientLight(0x404040, 2));
+
+  const renderer = new THREE.WebGLRenderer();
+  const effect = new AsciiEffect(renderer, ' d . - *@#°', { invert: true });
+  effect.setSize(w, h);
+  Object.assign(effect.domElement.style, {
+    position: 'absolute', inset: '0', color: '#000',
+    backgroundColor: 'transparent', fontFamily: 'monospace',
+    fontSize: '10px', lineHeight: '1', pointerEvents: 'none',
+  });
+  wrap.appendChild(effect.domElement);
+
+  const mouse = { x: 0, y: 0 };
+  const target = { x: 0, y: 0 };
+  const raycaster = new THREE.Raycaster();
+  const mouseVec = new THREE.Vector2();
+  const start = Date.now();
+  let animId: number;
+
+  window.addEventListener('resize', () => {
+    const nw = wrap.offsetWidth, nh = wrap.offsetHeight;
+    camera.aspect = nw / nh;
+    camera.updateProjectionMatrix();
+    effect.setSize(nw, nh);
+  });
+
+  window.addEventListener('mousemove', e => {
+    mouse.x = (e.clientX / window.innerWidth - 0.5) * 2;
+    mouse.y = -(e.clientY / window.innerHeight - 0.5) * 2;
+    mouseVec.set(mouse.x, mouse.y);
+    raycaster.setFromCamera(mouseVec, camera);
+    const hits = raycaster.intersectObject(sphere);
+    effect.domElement.style.color = hits.length > 0 ? '#9D00FF' : '#000';
+  });
+
+  const animate = () => {
+    animId = requestAnimationFrame(animate);
+    const t = (Date.now() - start) / 1000;
+    target.x += (mouse.x - target.x) * 0.04;
+    target.y += (mouse.y - target.y) * 0.04;
+    sphere.rotation.y = t * 0.15 + target.x * 1.2;
+    sphere.rotation.x = t * 0.08 + target.y * 0.8;
+    effect.render(scene, camera);
+  };
+  animate();
+
+  document.addEventListener('astro:before-swap', () => {
+    running = false;
+    cancelAnimationFrame(animId);
+    renderer.dispose();
+  });
+</script>

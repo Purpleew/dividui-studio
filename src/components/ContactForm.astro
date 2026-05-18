@@ -1,0 +1,169 @@
+---
+import Badge from './Badge.astro';
+---
+<section class="py-24 md:py-40 border-b border-border" id="contact-form">
+  <div class="container">
+    <div class="grid lg:grid-cols-12 gap-12 mb-16">
+      <div class="lg:col-span-5">
+        <Badge>// Reach out</Badge>
+        <h2 class="mt-6 text-5xl md:text-7xl leading-[0.95] tracking-tight text-balance">
+          Let's talk.
+        </h2>
+      </div>
+      <p class="lg:col-span-7 lg:pl-12 lg:border-l border-border text-2xl md:text-3xl leading-snug text-balance self-end">
+        Join the network.<br />
+        <span class="text-muted-foreground">Entra a far parte del network.</span>
+      </p>
+    </div>
+
+    <form id="contact-form-el" class="grid md:grid-cols-2 gap-6" novalidate>
+
+      <div class="flex flex-col gap-2">
+        <label class="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+          Nome <span style="color: var(--color-accent)">*</span>
+        </label>
+        <input id="f-nome" type="text" autocomplete="given-name" placeholder="Mario"
+          class="w-full bg-transparent border-b border-border py-3 text-lg outline-none transition-colors placeholder:text-muted-foreground" />
+        <span id="e-nome" class="text-xs font-mono hidden" style="color: #ef4444"></span>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label class="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+          Cognome <span style="color: var(--color-accent)">*</span>
+        </label>
+        <input id="f-cognome" type="text" autocomplete="family-name" placeholder="Rossi"
+          class="w-full bg-transparent border-b border-border py-3 text-lg outline-none transition-colors placeholder:text-muted-foreground" />
+        <span id="e-cognome" class="text-xs font-mono hidden" style="color: #ef4444"></span>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label class="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+          Email <span style="color: var(--color-accent)">*</span>
+        </label>
+        <input id="f-email" type="email" autocomplete="email" placeholder="mario@studio.it"
+          class="w-full bg-transparent border-b border-border py-3 text-lg outline-none transition-colors placeholder:text-muted-foreground" />
+        <span id="e-email" class="text-xs font-mono hidden" style="color: #ef4444"></span>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label class="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+          Studio / Azienda
+        </label>
+        <input id="f-company" type="text" autocomplete="organization" placeholder="Studio Acme"
+          class="w-full bg-transparent border-b border-border py-3 text-lg outline-none transition-colors placeholder:text-muted-foreground" />
+      </div>
+
+      <div class="flex flex-col gap-2 md:col-span-2">
+        <label class="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+          Messaggio <span style="color: var(--color-accent)">*</span>
+        </label>
+        <textarea id="f-messaggio" rows="5" placeholder="Raccontaci il tuo progetto — Tell us about your project."
+          class="w-full bg-transparent border-b border-border py-3 text-lg outline-none transition-colors resize-none placeholder:text-muted-foreground"></textarea>
+        <span id="e-messaggio" class="text-xs font-mono hidden" style="color: #ef4444"></span>
+      </div>
+
+      <div class="md:col-span-2 flex flex-col gap-2">
+        <label class="flex items-start gap-4 cursor-pointer">
+          <button type="button" id="privacy-btn" role="checkbox" aria-checked="false"
+            class="mt-1 w-4 h-4 shrink-0 border transition-colors border-foreground/30">
+          </button>
+          <span class="text-sm text-muted-foreground leading-relaxed">
+            Acconsento al trattamento dei miei dati personali ai sensi del Regolamento UE 2016/679 (GDPR).
+            <a href="#" class="underline hover:text-foreground transition-colors">Privacy Policy</a>.
+            <span style="color: var(--color-accent)">*</span>
+          </span>
+        </label>
+        <span id="e-privacy" class="text-xs font-mono hidden" style="color: #ef4444"></span>
+      </div>
+
+      <div class="md:col-span-2 flex items-center gap-6 mt-4">
+        <button type="submit" id="submit-btn"
+          class="inline-flex items-center gap-2 px-8 h-12 rounded-full text-sm font-medium hover:opacity-90 transition-opacity"
+          style="background-color: var(--color-foreground); color: var(--color-background)">
+          Send message &rarr;
+        </button>
+        <p id="form-status" class="text-sm font-mono text-muted-foreground hidden"></p>
+      </div>
+
+    </form>
+  </div>
+</section>
+
+<script>
+  const GOOGLE_API_KEY = 'YOUR_GOOGLE_API_KEY';
+  const SPREADSHEET_ID = 'YOUR_SPREADSHEET_ID';
+  const SHEET_RANGE = 'Sheet1';
+
+  const nome = document.getElementById('f-nome') as HTMLInputElement;
+  const cognome = document.getElementById('f-cognome') as HTMLInputElement;
+  const email = document.getElementById('f-email') as HTMLInputElement;
+  const company = document.getElementById('f-company') as HTMLInputElement;
+  const messaggio = document.getElementById('f-messaggio') as HTMLTextAreaElement;
+  const privacyBtn = document.getElementById('privacy-btn') as HTMLButtonElement;
+  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+  const statusEl = document.getElementById('form-status')!;
+
+  let privacyChecked = false;
+
+  const checkSvg = `<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" style="width:100%;height:100%;color:var(--color-background)"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg>`;
+
+  privacyBtn.addEventListener('click', () => {
+    privacyChecked = !privacyChecked;
+    privacyBtn.setAttribute('aria-checked', String(privacyChecked));
+    privacyBtn.style.backgroundColor = privacyChecked ? 'var(--color-foreground)' : '';
+    privacyBtn.style.borderColor = privacyChecked ? 'var(--color-foreground)' : '';
+    privacyBtn.innerHTML = privacyChecked ? checkSvg : '';
+  });
+
+  function showError(id: string, msg: string) {
+    const el = document.getElementById(id)!;
+    el.textContent = msg;
+    el.classList.remove('hidden');
+  }
+
+  function clearErrors() {
+    ['e-nome', 'e-cognome', 'e-email', 'e-messaggio', 'e-privacy'].forEach(id => {
+      document.getElementById(id)!.classList.add('hidden');
+    });
+  }
+
+  function validate(): boolean {
+    clearErrors();
+    let valid = true;
+    if (!nome.value.trim()) { showError('e-nome', 'Il nome è obbligatorio.'); valid = false; }
+    if (!cognome.value.trim()) { showError('e-cognome', 'Il cognome è obbligatorio.'); valid = false; }
+    if (!email.value.trim()) { showError('e-email', "L'email è obbligatoria."); valid = false; }
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) { showError('e-email', 'Formato email non valido.'); valid = false; }
+    if (!messaggio.value.trim()) { showError('e-messaggio', 'Il messaggio è obbligatorio.'); valid = false; }
+    if (!privacyChecked) { showError('e-privacy', 'Devi accettare il trattamento dei dati.'); valid = false; }
+    return valid;
+  }
+
+  document.getElementById('contact-form-el')!.addEventListener('submit', async e => {
+    e.preventDefault();
+    if (!validate()) return;
+
+    submitBtn.setAttribute('disabled', '');
+    statusEl.textContent = 'Sending…';
+    statusEl.classList.remove('hidden');
+
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${SHEET_RANGE}!A1:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS&key=${GOOGLE_API_KEY}`;
+    const payload = { values: [[nome.value, cognome.value, email.value, company.value, messaggio.value, new Date().toISOString()]] };
+
+    try {
+      const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      statusEl.textContent = 'Message sent. We\'ll be in touch.';
+      nome.value = cognome.value = email.value = company.value = messaggio.value = '';
+      privacyChecked = false;
+      privacyBtn.setAttribute('aria-checked', 'false');
+      privacyBtn.style.backgroundColor = '';
+      privacyBtn.innerHTML = '';
+    } catch {
+      statusEl.textContent = 'Something went wrong. Write us directly.';
+      (statusEl as HTMLElement).style.color = '#ef4444';
+    } finally {
+      submitBtn.removeAttribute('disabled');
+    }
+  });
+</script>

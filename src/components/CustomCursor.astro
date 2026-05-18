@@ -1,0 +1,50 @@
+---
+---
+<div
+  id="custom-cursor"
+  class="fixed top-0 left-0 pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2 rounded-full hidden md:block"
+  style="left: -100px; top: -100px; width: 28px; height: 28px; background-color: #000000; transition: width 0.35s ease, height 0.35s ease, background-color 0.3s ease;"
+></div>
+
+<script>
+  const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+  if (!isTouchDevice) {
+    const cursor = document.getElementById('custom-cursor')!;
+    let mouseX = -100, mouseY = -100, curX = -100, curY = -100;
+
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
+    const isDarkBg = (el: Element | null): boolean => {
+      while (el && el !== document.body) {
+        const bg = window.getComputedStyle(el as HTMLElement).backgroundColor;
+        const match = bg.match(/\d+/g);
+        if (match) {
+          const [r, g, b] = match.map(Number);
+          if (r + g + b < 100) return true;
+        }
+        el = el.parentElement;
+      }
+      return false;
+    };
+
+    window.addEventListener('mousemove', e => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      const dark = el ? isDarkBg(el) : false;
+      const hovering = el ? !!el.closest('a, button') : false;
+      cursor.style.backgroundColor = dark ? '#7c3aed' : '#000000';
+      cursor.style.width = hovering ? '56px' : '28px';
+      cursor.style.height = hovering ? '56px' : '28px';
+    });
+
+    const animate = () => {
+      curX = lerp(curX, mouseX, 0.18);
+      curY = lerp(curY, mouseY, 0.18);
+      cursor.style.left = curX + 'px';
+      cursor.style.top = curY + 'px';
+      requestAnimationFrame(animate);
+    };
+    animate();
+  }
+</script>

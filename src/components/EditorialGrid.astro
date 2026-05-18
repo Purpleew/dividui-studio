@@ -1,0 +1,86 @@
+---
+---
+<section style="background: #000; padding: 100px 0 0; overflow: hidden;">
+  <div style="display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 24px; margin-bottom: 60px;">
+    <h2 style="font-family: 'Host Grotesk', system-ui, sans-serif; font-weight: 300; font-size: clamp(2.4rem, 5vw, 4rem); letter-spacing: -0.01em; line-height: 1.1; color: #f5f5f3; margin: 0 0 24px;">
+      A space where<br /><em>craft finds its place.</em>
+    </h2>
+    <p style="font-family: 'Host Grotesk', system-ui, sans-serif; font-size: 14px; line-height: 1.7; color: #f5f5f3; max-width: 380px; opacity: 0.55; margin: 0;">
+      Dividui è una piattaforma per freelancer che credono nel valore del
+      mestiere. Ogni collaborazione nasce da <em>intenzione condivisa</em>
+      e cura autentica per il lavoro.
+    </p>
+  </div>
+  <div id="editorial-canvas" style="position: relative; width: 100%; height: 70vh;"></div>
+</section>
+
+<script>
+  import * as THREE from 'three';
+  import { AsciiEffect } from 'three/addons/effects/AsciiEffect.js';
+
+  const wrap = document.getElementById('editorial-canvas')!;
+  const w = wrap.offsetWidth;
+  const h = wrap.offsetHeight;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(55, w / h, 1, 2000);
+  camera.position.z = 700;
+
+  const sphere = new THREE.Mesh(
+    new THREE.SphereGeometry(280, 12, 12),
+    new THREE.MeshPhongMaterial({ color: 0xffffff, flatShading: true })
+  );
+  scene.add(sphere);
+
+  const l1 = new THREE.PointLight(0xffffff, 4, 0, 0);
+  l1.position.set(400, 400, 400);
+  scene.add(l1);
+  const l2 = new THREE.PointLight(0xffffff, 2, 0, 0);
+  l2.position.set(-400, -300, -400);
+  scene.add(l2);
+  scene.add(new THREE.AmbientLight(0x404040, 2));
+
+  const renderer = new THREE.WebGLRenderer();
+  const effect = new AsciiEffect(renderer, ' d . - *@#°', { invert: true });
+  effect.setSize(w, h);
+  Object.assign(effect.domElement.style, {
+    position: 'absolute', inset: '0', color: '#ffffff',
+    backgroundColor: 'transparent', fontFamily: 'monospace',
+    fontSize: '11px', lineHeight: '1', pointerEvents: 'none',
+  });
+  wrap.appendChild(effect.domElement);
+
+  const mouse = { x: 0, y: 0 };
+  const target = { x: 0, y: 0 };
+  const start = Date.now();
+  let animId: number;
+
+  window.addEventListener('resize', () => {
+    const nw = wrap.offsetWidth, nh = wrap.offsetHeight;
+    camera.aspect = nw / nh;
+    camera.updateProjectionMatrix();
+    effect.setSize(nw, nh);
+  });
+
+  wrap.addEventListener('mousemove', e => {
+    const rect = wrap.getBoundingClientRect();
+    mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+  });
+
+  const animate = () => {
+    animId = requestAnimationFrame(animate);
+    const t = (Date.now() - start) / 1000;
+    target.x += (mouse.x - target.x) * 0.04;
+    target.y += (mouse.y - target.y) * 0.04;
+    sphere.rotation.y = t * 0.15 + target.x * 1.2;
+    sphere.rotation.x = t * 0.08 + target.y * 0.8;
+    effect.render(scene, camera);
+  };
+  animate();
+
+  document.addEventListener('astro:before-swap', () => {
+    cancelAnimationFrame(animId);
+    renderer.dispose();
+  });
+</script>

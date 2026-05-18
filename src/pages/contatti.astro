@@ -1,0 +1,21 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ContactForm from '../components/ContactForm.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+  title="Contact — Dividui® Studio"
+  description="Write to Dividui® Studio. Join the network, start a collaboration, or simply say hello."
+>
+  <section class="pt-40 pb-8">
+    <div class="container">
+      <p class="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">/ Reach out</p>
+      <h1 class="font-light tracking-tighter text-[clamp(3rem,8vw,7rem)] leading-none mb-4">Contact</h1>
+      <p class="text-xl text-muted-foreground">Write to us. We'll be in touch.</p>
+    </div>
+  </section>
+
+  <ContactForm />
+  <Footer />
+</Layout>

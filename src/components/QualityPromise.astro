@@ -1,0 +1,83 @@
+---
+import Badge from './Badge.astro';
+
+const pillars = [
+  {
+    title: 'Connection',
+    body: 'The best collaborations are born from genuine encounters between people who share values, not just skills. The network is the heart of everything.',
+  },
+  {
+    title: 'Craft',
+    body: 'Detail makes the difference. We work with professionals who take their work seriously — because quality is never optional.',
+  },
+  {
+    title: 'Autonomy',
+    body: 'Being freelance means choosing. Dividui respects this freedom and supports it with tools, relationships, and opportunities built for independent work.',
+  },
+  {
+    title: 'Value',
+    body: 'Every project must generate real value — for those who commission it and those who realise it. We work until both sides are satisfied.',
+  },
+];
+---
+<section class="py-24 md:py-40" style="background-color: var(--color-foreground); color: var(--color-background)">
+  <div class="container">
+    <div class="grid lg:grid-cols-12 gap-12 mb-20">
+      <div class="lg:col-span-5">
+        <Badge class="!border-white/20" style="color: rgba(255,255,255,0.5)">// 02 Values</Badge>
+        <h2 class="mt-6 text-5xl md:text-7xl leading-[0.95] tracking-tight text-balance">
+          Dividui values.
+          <span class="block" style="color: rgba(255,255,255,0.4)">What guides every choice.</span>
+        </h2>
+      </div>
+      <p class="lg:col-span-7 lg:pl-12 lg:border-l text-2xl md:text-3xl leading-snug text-balance self-end" style="border-color: rgba(255,255,255,0.15)">
+        Four principles that define how we work — and why people choose to be part of this network.
+      </p>
+    </div>
+
+    <div class="border-t" style="border-color: rgba(255,255,255,0.15)">
+      {pillars.map((p, i) => (
+        <div class="border-b pillar-item" style="border-color: rgba(255,255,255,0.15)">
+          <button class="pillar-btn w-full flex items-center justify-between py-8 text-left" data-index={i}>
+            <div class="flex items-baseline gap-8">
+              <span class="font-mono text-sm" style="color: rgba(255,255,255,0.4)">0{i + 1}</span>
+              <h3 class="text-4xl md:text-6xl tracking-tight">{p.title}</h3>
+            </div>
+            <span class="pillar-icon text-4xl transition-transform duration-300">+</span>
+          </button>
+          <div class="pillar-body overflow-hidden" style="max-height: 0; transition: max-height 0.5s ease">
+            <p class="pb-10 pl-20 max-w-3xl text-xl md:text-2xl leading-snug" style="color: rgba(255,255,255,0.7)">{p.body}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  let openIndex = 0;
+  const btns = document.querySelectorAll<HTMLButtonElement>('.pillar-btn');
+  const bodies = document.querySelectorAll<HTMLElement>('.pillar-body');
+  const icons = document.querySelectorAll<HTMLElement>('.pillar-icon');
+
+  function update(idx: number) {
+    bodies.forEach((body, i) => {
+      if (i === idx) {
+        body.style.maxHeight = body.scrollHeight + 'px';
+        icons[i].style.transform = 'rotate(45deg)';
+      } else {
+        body.style.maxHeight = '0';
+        icons[i].style.transform = '';
+      }
+    });
+  }
+
+  requestAnimationFrame(() => update(openIndex));
+
+  btns.forEach((btn, i) => {
+    btn.addEventListener('click', () => {
+      openIndex = openIndex === i ? -1 : i;
+      update(openIndex);
+    });
+  });
+</script>
