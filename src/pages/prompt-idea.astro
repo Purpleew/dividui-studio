@@ -1,0 +1,103 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SplineKeyboard from '../components/SplineKeyboard.astro';
+import IdeaCanvas from '../components/IdeaCanvas.vue';
+---
+
+<Layout
+  title="Prompt Idea — Improbability Engine"
+  description="Un deviatore creativo per art director e creativi pubblicitari. Premi un tasto, genera l'imprevedibile."
+>
+  <main class="prompt-idea-page">
+
+    <!-- 1. Header -->
+    <header class="bg-black text-white text-center px-6 pt-32 pb-16">
+      <h1 class="font-sans text-5xl md:text-7xl font-light tracking-tight leading-none mb-4">
+        Improbability Engine
+      </h1>
+      <p class="font-sans text-base font-light opacity-50 max-w-md mx-auto leading-relaxed">
+        Un deviatore creativo per chi è in crisi di creatività.<br/>
+        Premi un tasto. Genera l'imprevedibile.
+      </p>
+    </header>
+
+    <!-- 2. Keyboard — full width -->
+    <section class="w-full" style="height: 90vh;">
+      <SplineKeyboard />
+    </section>
+
+    <!-- 3. Controls bar -->
+    <div class="bg-black w-full flex flex-wrap justify-center gap-3 px-6 py-8">
+      <button class="key key-combo" data-action="comboIdea">Combo Idea</button>
+      <button class="key key-topic" data-action="topic">Topic</button>
+      <button class="key key-remix" data-action="remix">Remix</button>
+      <button class="key key-next" data-action="nextIdea">Next Idea</button>
+      <button class="key key-send" data-action="send">Send</button>
+      <button class="key key-save" data-action="save">Save</button>
+      <button class="key key-heart" data-action="heart">♥</button>
+      <button class="key key-ai" data-action="aiMode">AI Mode</button>
+    </div>
+
+    <!-- 4. Results -->
+    <section class="w-full bg-black">
+      <IdeaCanvas client:load />
+    </section>
+
+  </main>
+</Layout>
+
+<script>
+  type KeyAction = 'comboIdea' | 'topic' | 'remix' | 'nextIdea' | 'send' | 'save' | 'heart' | 'aiMode';
+
+  document.querySelectorAll<HTMLButtonElement>('.key[data-action]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const action = btn.dataset.action as KeyAction;
+      if (!action) return;
+      btn.classList.add('key--pressed');
+      setTimeout(() => btn.classList.remove('key--pressed'), 200);
+      window.dispatchEvent(new CustomEvent('dividui:keypress', { detail: { action } }));
+    });
+  });
+</script>
+
+<style is:global>
+  body:has(.prompt-idea-page) {
+    background-color: #000;
+  }
+</style>
+
+<style>
+  .prompt-idea-page {
+    min-height: 100vh;
+    background: #000;
+  }
+
+  .key {
+    padding: 0.5rem 1.25rem;
+    border: none;
+    border-radius: 100px;
+    font-family: var(--font-family-sans);
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+    letter-spacing: 0.01em;
+  }
+
+  .key:hover {
+    background: rgba(255, 255, 255, 0.22);
+    transform: translateY(-1px);
+  }
+
+  .key--pressed {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+
+  .key-combo { background: #FFD66B; color: #1a1a1a; }
+  .key-next  { background: #6B5BFF; color: white; }
+  .key-heart { background: #FF4D4D; color: white; }
+  .key-ai    { background: linear-gradient(135deg, #6B5BFF, #FF6B9D, #FFD66B); color: white; }
+</style>

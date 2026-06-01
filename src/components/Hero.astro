@@ -5,8 +5,8 @@
 
   <div class="container relative z-10 mt-12">
     <h1 class="hero-title font-light leading-[0.85] tracking-tighter text-balance">
-      <span class="block">A creative studio</span>
-      <span class="block">where dialogue creates:</span>
+      <span class="block md:inline">A creative studio </span>
+      <span class="block md:inline">where dialogue creates</span>
       <span class="relative inline-flex items-baseline gap-4">
         <span id="typewriter" class="font-normal italic"></span>
         <span class="inline-block w-2 h-[0.7em] animate-pulse" style="background-color: #7c3aed"></span>
@@ -34,7 +34,7 @@
   import * as THREE from 'three';
   import { AsciiEffect } from 'three/addons/effects/AsciiEffect.js';
 
-  const words = ['craft.', 'form.', 'design.', 'meaning.', 'value.', 'creativity.', 'love.'];
+  const words = ['craft.', 'form.', 'design.', 'value.', 'love.', 'gist.', 'sense.', 'ideas.', 'dream.', 'query.', 'doubt.'];
   const el = document.getElementById('typewriter')!;
   let wordIdx = 0;
   let running = true;
@@ -136,11 +136,11 @@
 
 <style>
   .hero-title {
-    font-size: 6rem;
+    font-size: 4rem;
   }
   @media (min-width: 768px) {
     .hero-title {
-      font-size: clamp(3rem, 12vw, 13rem);
+      font-size: clamp(4rem, 12vw, 13rem);
     }
   }
 </style>

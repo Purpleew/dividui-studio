@@ -1,0 +1,145 @@
+---
+// src/components/SplineKeyboard.astro
+// Wrapper per la keyboard 3D Spline + event listeners
+---
+
+<div class="spline-keyboard-wrapper">
+  <!-- Loading state -->
+  <div class="spline-loader" id="splineLoader">
+    <span>Caricamento keyboard...</span>
+  </div>
+
+  <!-- Spline embed -->
+  <spline-viewer
+    id="splineKeyboard"
+    url="https://prod.spline.design/6XPVZwZFPGU1SEJl/scene.splinecode"
+    loading-anim-type="spinner-small-dark"
+  ></spline-viewer>
+
+</div>
+
+<script is:inline type="module" src="https://unpkg.com/@splinetool/viewer@1.12.96/build/spline-viewer.js"></script>
+
+<script>
+  // ============================================
+  // Event dispatcher: invia eventi globali quando un tasto viene cliccato
+  // ============================================
+
+  type KeyAction = 'comboIdea' | 'topic' | 'remix' | 'nextIdea' | 'send' | 'save' | 'heart' | 'aiMode';
+
+  function dispatchKeyPress(action: KeyAction) {
+    window.dispatchEvent(new CustomEvent('dividui:keypress', {
+      detail: { action }
+    }));
+  }
+
+  // ============================================
+  // 0. Keyboard shortcuts
+  // ============================================
+  document.addEventListener('keydown', (e) => {
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+    if (e.code === 'Space') {
+      e.preventDefault();
+      dispatchKeyPress('comboIdea');
+    } else if (e.code === 'Enter') {
+      e.preventDefault();
+      dispatchKeyPress('nextIdea');
+    }
+  });
+
+  // ============================================
+  // 1. Spline event listeners
+  // ============================================
+  const splineViewer = document.getElementById('splineKeyboard');
+  const splineLoader = document.getElementById('splineLoader');
+
+  if (splineViewer) {
+    splineViewer.addEventListener('load', () => {
+      if (splineLoader) splineLoader.style.display = 'none';
+      console.log('[Spline] Keyboard loaded ✓');
+
+      // Blocca la camera completamente
+      const app = (splineViewer as any)._spline;
+      if (app) {
+        const controls =
+          app._controls ??
+          app.controls ??
+          app._viewer?._controls ??
+          app.camera?._controls;
+
+        if (controls) {
+          controls.enableRotate = false;
+          controls.enablePan    = false;
+          controls.enableZoom   = false;
+          // NON disabilitare controls.enabled — blocca anche i click sugli oggetti
+          console.log('[Spline] Camera locked ✓');
+        }
+      }
+    });
+
+    // Mapping nome oggetto Spline → azione
+    const OBJECT_MAP: Record<string, KeyAction> = {
+      // nomi comuni — aggiorna con i nomi reali della scena
+      'combo': 'comboIdea',
+      'enter': 'comboIdea',
+      'space': 'comboIdea',
+      'next': 'nextIdea',
+      'topic': 'topic',
+      'remix': 'remix',
+      'send': 'send',
+      'save': 'save',
+      'heart': 'heart',
+      'love': 'heart',
+      'ai': 'aiMode',
+    };
+
+    function handleSplineEvent(e: any) {
+      const name: string = e.detail?.target?.name?.toLowerCase() ?? '';
+      console.log('[Spline] event:', e.type, '→', name);
+      for (const [key, action] of Object.entries(OBJECT_MAP)) {
+        if (name.includes(key)) {
+          dispatchKeyPress(action);
+          return;
+        }
+      }
+      if (name) dispatchKeyPress('comboIdea');
+    }
+
+    splineViewer.addEventListener('mouseDown', handleSplineEvent);
+    splineViewer.addEventListener('keyDown', handleSplineEvent);
+  }
+</script>
+
+<style>
+  .spline-keyboard-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+  }
+
+  spline-viewer {
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: transparent;
+  }
+
+  .spline-loader {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.875rem;
+    z-index: 1;
+  }
+
+  @media (max-width: 768px) {
+    .spline-keyboard-wrapper {
+      aspect-ratio: 4 / 3;
+    }
+  }
+</style>
