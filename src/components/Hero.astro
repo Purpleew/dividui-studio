@@ -4,12 +4,12 @@
   <div id="hero-canvas" class="absolute inset-0 opacity-40"></div>
 
   <div class="container relative z-10 mt-12">
-    <h1 class="font-light leading-[0.85] tracking-tighter text-[clamp(3rem,12vw,13rem)] text-balance">
+    <h1 class="hero-title font-light leading-[0.85] tracking-tighter text-balance">
       <span class="block">A creative studio</span>
-      <span class="block">where dialogue creates</span>
+      <span class="block">where dialogue creates:</span>
       <span class="relative inline-flex items-baseline gap-4">
         <span id="typewriter" class="font-normal italic"></span>
-        <span class="inline-block w-2 h-[0.7em] animate-pulse" style="background-color: var(--color-accent)"></span>
+        <span class="inline-block w-2 h-[0.7em] animate-pulse" style="background-color: #7c3aed"></span>
       </span>
     </h1>
 
@@ -34,7 +34,7 @@
   import * as THREE from 'three';
   import { AsciiEffect } from 'three/addons/effects/AsciiEffect.js';
 
-  const words = ['value.', 'form.', 'craft.', 'meaning.'];
+  const words = ['craft.', 'form.', 'design.', 'meaning.', 'value.', 'creativity.', 'love.'];
   const el = document.getElementById('typewriter')!;
   let wordIdx = 0;
   let running = true;
@@ -133,3 +133,14 @@
     renderer.dispose();
   });
 </script>
+
+<style>
+  .hero-title {
+    font-size: 6rem;
+  }
+  @media (min-width: 768px) {
+    .hero-title {
+      font-size: clamp(3rem, 12vw, 13rem);
+    }
+  }
+</style>
