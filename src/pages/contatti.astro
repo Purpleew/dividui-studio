@@ -5,14 +5,23 @@ import Footer from '../components/Footer.astro';
 ---
 
 <Layout
-  title="Contact — Dividui® Studio"
-  description="Write to Dividui® Studio. Join the network, start a collaboration, or simply say hello."
+  title="Contatti — Dividui® Studio"
+  description="Scrivici. Entra nel network, inizia una collaborazione, o semplicemente salutaci."
 >
   <section class="pt-40 pb-8">
     <div class="container">
-      <p class="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">/ Reach out</p>
-      <h1 class="font-light tracking-tighter text-[clamp(3rem,8vw,7rem)] leading-none mb-4">Contact</h1>
-      <p class="text-xl text-muted-foreground">Write to us. We'll be in touch.</p>
+      <h1 class="font-light tracking-tighter text-[clamp(3rem,8vw,7rem)] leading-none mb-16">Contatti</h1>
+
+      <p class="text-lg text-muted-foreground max-w-md mb-10 leading-relaxed">Nessuna call infinita, nessun brief da compilare. Scrivici un messaggio — rispondiamo sempre.</p>
+
+      <div class="flex flex-col gap-4 mb-16">
+        <a href="mailto:hello@dividui.studio" class="font-light tracking-tighter text-[clamp(1.5rem,4vw,3.5rem)] leading-none hover:opacity-40 transition-opacity">
+          hello@dividui.studio
+        </a>
+        <a href="tel:+393454452660" class="font-light tracking-tighter text-[clamp(1.5rem,4vw,3.5rem)] leading-none hover:opacity-40 transition-opacity">
+          +39 345 445 2660
+        </a>
+      </div>
     </div>
   </section>
 
