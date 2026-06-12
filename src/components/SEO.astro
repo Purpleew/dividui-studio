@@ -10,15 +10,15 @@ export interface Props {
 
 const {
   title = 'Dividui Studio',
-  description = 'Independent creative studio born from the collaboration of freelances. Where dialogue creates value. Branding. Strategy. Web. Visuals.',
+  description = 'Una rete di freelance verticali che costruisce identità, esperienze digitali e contenuti. Diamo forma ai brand e li rendiamo impossibili da ignorare.',
   image = '/social-card.jpg',
   canonical = Astro.url.href,
   noindex = false,
   type = 'website',
 } = Astro.props;
 
-const siteName = 'Dividui Studio';
-const fullTitle = title === siteName ? title : `${title} | ${siteName}`;
+const siteName = 'Dividui Studio — Studio creativo indipendente';
+const fullTitle = title === 'Dividui Studio' ? siteName : `${title} | Dividui Studio`;
 const imageURL = new URL(image, Astro.site).toString();
 ---
 
@@ -26,6 +26,7 @@ const imageURL = new URL(image, Astro.site).toString();
 <title>{fullTitle}</title>
 <meta name="title" content={fullTitle} />
 <meta name="description" content={description} />
+<meta name="keywords" content="studio creativo, branding, identità visiva, web design, freelance, advertising, social media, video, collettivo creativo, Milano, Italia" />
 <meta name="author" content="Dividui Studio" />
 <link rel="canonical" href={canonical} />
 
@@ -43,8 +44,8 @@ const imageURL = new URL(image, Astro.site).toString();
 <meta property="og:image" content={imageURL} />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:image:alt" content="Dividui Studio — Independent creative studio" />
-<meta property="og:site_name" content={siteName} />
+<meta property="og:image:alt" content="Dividui Studio — Studio creativo indipendente" />
+<meta property="og:site_name" content="Dividui Studio" />
 <meta property="og:locale" content="it_IT" />
 <meta property="og:locale:alternate" content="en_US" />
 
@@ -55,7 +56,7 @@ const imageURL = new URL(image, Astro.site).toString();
 <meta name="twitter:title" content={fullTitle} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={imageURL} />
-<meta name="twitter:image:alt" content="Dividui Studio — Independent creative studio" />
+<meta name="twitter:image:alt" content="Dividui Studio — Studio creativo indipendente" />
 
 <!-- JSON-LD Structured Data -->
 <script type="application/ld+json" set:html={JSON.stringify({
@@ -65,11 +66,22 @@ const imageURL = new URL(image, Astro.site).toString();
   "alternateName": "Dividui",
   "url": "https://dividui.studio",
   "logo": "https://dividui.studio/logo.svg",
-  "description": "Independent creative studio born from the collaboration of freelances. Where dialogue creates value.",
+  "description": "Una rete di freelance verticali che costruisce identità, esperienze digitali e contenuti. Diamo forma ai brand e li rendiamo impossibili da ignorare.",
+  "slogan": "Più individui. Un solo brand.",
   "foundingDate": "2026",
-  "areaServed": "Worldwide",
+  "areaServed": ["Italy", "Europe"],
   "knowsLanguage": ["it", "en"],
-  "knowsAbout": ["Branding", "Strategy", "Web Design", "Visual Identity", "Creative Direction"],
+  "knowsAbout": ["Branding", "Identità visiva", "Web Design", "Sviluppo web", "Social Media", "Video", "Advertising", "Creative Direction", "Content Strategy"],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Servizi creativi",
+    "itemListElement": [
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Branding & Identità visiva" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Esperienze digitali & Web" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Video & Contenuti" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Social Media & Advertising" } }
+    ]
+  },
   "sameAs": [
     "https://instagram.com/dividui",
     "https://www.linkedin.com/company/dividui",

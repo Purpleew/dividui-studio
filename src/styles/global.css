@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
-@font-face { font-family: 'Host Grotesk'; src: url('/fonts/HostGrotesk-Light.woff2') format('woff2'); font-weight: 300; font-style: normal; font-display: swap; }
-@font-face { font-family: 'Host Grotesk'; src: url('/fonts/HostGrotesk-LightItalic.woff2') format('woff2'); font-weight: 300; font-style: italic; font-display: swap; }
-@font-face { font-family: 'Host Grotesk'; src: url('/fonts/HostGrotesk-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: 'Host Grotesk'; src: url('/fonts/HostGrotesk-Italic.woff2') format('woff2'); font-weight: 400; font-style: italic; font-display: swap; }
-@font-face { font-family: 'Host Grotesk'; src: url('/fonts/HostGrotesk-Medium.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: swap; }
-@font-face { font-family: 'Host Grotesk'; src: url('/fonts/HostGrotesk-MediumItalic.woff2') format('woff2'); font-weight: 500; font-style: italic; font-display: swap; }
-@font-face { font-family: 'Host Grotesk'; src: url('/fonts/HostGrotesk-SemiBold.woff2') format('woff2'); font-weight: 600; font-style: normal; font-display: swap; }
-@font-face { font-family: 'Host Grotesk'; src: url('/fonts/HostGrotesk-SemiBoldItalic.woff2') format('woff2'); font-weight: 600; font-style: italic; font-display: swap; }
-@font-face { font-family: 'Host Grotesk'; src: url('/fonts/HostGrotesk-Bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
-@font-face { font-family: 'Host Grotesk'; src: url('/fonts/HostGrotesk-BoldItalic.woff2') format('woff2'); font-weight: 700; font-style: italic; font-display: swap; }
-@font-face { font-family: 'Host Grotesk'; src: url('/fonts/HostGrotesk-ExtraBold.woff2') format('woff2'); font-weight: 800; font-style: normal; font-display: swap; }
-@font-face { font-family: 'Host Grotesk'; src: url('/fonts/HostGrotesk-ExtraBoldItalic.woff2') format('woff2'); font-weight: 800; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Host Grotesk'; src: local('Host Grotesk Light'), local('HostGrotesk-Light'), url('/fonts/HostGrotesk-Light.woff2') format('woff2'); font-weight: 300; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Host Grotesk'; src: local('Host Grotesk Light Italic'), local('HostGrotesk-LightItalic'), url('/fonts/HostGrotesk-LightItalic.woff2') format('woff2'); font-weight: 300; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Host Grotesk'; src: local('Host Grotesk'), local('HostGrotesk-Regular'), url('/fonts/HostGrotesk-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Host Grotesk'; src: local('Host Grotesk Italic'), local('HostGrotesk-Italic'), url('/fonts/HostGrotesk-Italic.woff2') format('woff2'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Host Grotesk'; src: local('Host Grotesk Medium'), local('HostGrotesk-Medium'), url('/fonts/HostGrotesk-Medium.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Host Grotesk'; src: local('Host Grotesk Medium Italic'), local('HostGrotesk-MediumItalic'), url('/fonts/HostGrotesk-MediumItalic.woff2') format('woff2'); font-weight: 500; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Host Grotesk'; src: local('Host Grotesk SemiBold'), local('HostGrotesk-SemiBold'), url('/fonts/HostGrotesk-SemiBold.woff2') format('woff2'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Host Grotesk'; src: local('Host Grotesk SemiBold Italic'), local('HostGrotesk-SemiBoldItalic'), url('/fonts/HostGrotesk-SemiBoldItalic.woff2') format('woff2'); font-weight: 600; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Host Grotesk'; src: local('Host Grotesk Bold'), local('HostGrotesk-Bold'), url('/fonts/HostGrotesk-Bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Host Grotesk'; src: local('Host Grotesk Bold Italic'), local('HostGrotesk-BoldItalic'), url('/fonts/HostGrotesk-BoldItalic.woff2') format('woff2'); font-weight: 700; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Host Grotesk'; src: local('Host Grotesk ExtraBold'), local('HostGrotesk-ExtraBold'), url('/fonts/HostGrotesk-ExtraBold.woff2') format('woff2'); font-weight: 800; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Host Grotesk'; src: local('Host Grotesk ExtraBold Italic'), local('HostGrotesk-ExtraBoldItalic'), url('/fonts/HostGrotesk-ExtraBoldItalic.woff2') format('woff2'); font-weight: 800; font-style: italic; font-display: swap; }
 
 @theme {
   --font-family-sans: 'Host Grotesk', system-ui, sans-serif;

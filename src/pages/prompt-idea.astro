@@ -10,44 +10,43 @@ import IdeaCanvas from '../components/IdeaCanvas.vue';
 >
   <main class="prompt-idea-page">
 
-    <!-- 1. Header -->
-    <header class="bg-black text-white text-center px-6 pt-32 pb-16">
-      <h1 class="font-sans text-5xl md:text-7xl font-light tracking-tight leading-none mb-4">
-        Improbability Engine
-      </h1>
-      <p class="font-sans text-base font-light opacity-50 max-w-md mx-auto leading-relaxed">
-        Un deviatore creativo per chi è in crisi di creatività.<br/>
-        Premi un tasto. Genera l'imprevedibile.
-      </p>
-    </header>
+    <!-- Full-screen spline hero -->
+    <section class="spline-hero">
 
-    <!-- 2. Keyboard — full width -->
-    <section class="w-full" style="height: 90vh;">
+      <!-- Header overlaid top -->
+      <div class="hero-header">
+        <h1 class="hero-title">Improbability Engine</h1>
+        <p class="hero-sub">Quante volte vorremmo avere la risposta alle nostre domande?<br/>E quante volte vorremmo sapere cosa chiedere?</p>
+      </div>
+
+      <!-- Keyboard fills the section -->
       <SplineKeyboard />
+
+      <!-- Controls bar pinned bottom -->
+      <div class="controls-bar">
+        <button class="key key-write" data-action="writePrompt">Write Prompt</button>
+        <button class="key key-topic" data-action="topic">Topic</button>
+        <button class="key key-remix" data-action="remix">Remix</button>
+        <button class="key key-next" data-action="nextIdea">Next Idea</button>
+        <button class="key key-send" data-action="send">Send</button>
+        <button class="key key-save" data-action="save">Save</button>
+        <button class="key key-heart" data-action="heart">♥</button>
+        <button class="key key-reset" data-action="reset">· Reset</button>
+        <button class="key key-ai" data-action="aiMode">AI Mode</button>
+      </div>
+
     </section>
 
-    <!-- 3. Controls bar -->
-    <div class="bg-black w-full flex flex-wrap justify-center gap-3 px-6 py-8">
-      <button class="key key-combo" data-action="comboIdea">Combo Idea</button>
-      <button class="key key-topic" data-action="topic">Topic</button>
-      <button class="key key-remix" data-action="remix">Remix</button>
-      <button class="key key-next" data-action="nextIdea">Next Idea</button>
-      <button class="key key-send" data-action="send">Send</button>
-      <button class="key key-save" data-action="save">Save</button>
-      <button class="key key-heart" data-action="heart">♥</button>
-      <button class="key key-ai" data-action="aiMode">AI Mode</button>
-    </div>
-
-    <!-- 4. Results -->
+    <!-- Results scroll below -->
     <section class="w-full bg-black">
-      <IdeaCanvas client:load />
+      <IdeaCanvas client:visible />
     </section>
 
   </main>
 </Layout>
 
 <script>
-  type KeyAction = 'comboIdea' | 'topic' | 'remix' | 'nextIdea' | 'send' | 'save' | 'heart' | 'aiMode';
+  type KeyAction = 'writePrompt' | 'topic' | 'remix' | 'nextIdea' | 'send' | 'save' | 'heart' | 'aiMode' | 'reset';
 
   document.querySelectorAll<HTMLButtonElement>('.key[data-action]').forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -70,6 +69,58 @@ import IdeaCanvas from '../components/IdeaCanvas.vue';
   .prompt-idea-page {
     min-height: 100vh;
     background: #000;
+  }
+
+  /* ── Full-screen hero ── */
+  .spline-hero {
+    position: relative;
+    width: 100vw;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .hero-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    text-align: center;
+    padding: 5rem 1.5rem 3rem;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, transparent 100%);
+    pointer-events: none;
+  }
+
+  .hero-title {
+    font-family: var(--font-family-sans);
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: #fff;
+    margin: 0 0 0.5rem;
+  }
+
+  .hero-sub {
+    font-family: var(--font-family-sans);
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: rgba(255,255,255,0.45);
+    margin: 0;
+  }
+
+  .controls-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 2rem 1.5rem 2.5rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 100%);
   }
 
   .key {
@@ -96,8 +147,9 @@ import IdeaCanvas from '../components/IdeaCanvas.vue';
     opacity: 0.7;
   }
 
-  .key-combo { background: #FFD66B; color: #1a1a1a; }
+  .key-write { background: #FFD66B; color: #1a1a1a; }
   .key-next  { background: #6B5BFF; color: white; }
   .key-heart { background: #FF4D4D; color: white; }
+  .key-reset { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.45); border: 1px solid rgba(255,255,255,0.12); }
   .key-ai    { background: linear-gradient(135deg, #6B5BFF, #FF6B9D, #FFD66B); color: white; }
 </style>

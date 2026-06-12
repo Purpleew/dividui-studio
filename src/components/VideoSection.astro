@@ -1,0 +1,27 @@
+---
+interface Props {
+  src?: string;
+  poster?: string;
+}
+const { src, poster } = Astro.props;
+---
+<section class="relative w-full overflow-hidden bg-black" style="aspect-ratio: 16/9;">
+  <canvas id="video-canvas" class="absolute inset-0 w-full h-full"></canvas>
+
+  {src ? (
+    <video
+      id="hero-video"
+      class="absolute inset-0 w-full h-full object-cover"
+      src={src}
+      poster={poster}
+      autoplay
+      muted
+      loop
+      playsinline
+    />
+  ) : (
+    <div class="absolute inset-0 flex items-center justify-center" style="color: color-mix(in oklab, var(--color-foreground) 20%, transparent)">
+      <span class="text-sm tracking-widest uppercase">Video</span>
+    </div>
+  )}
+</section>

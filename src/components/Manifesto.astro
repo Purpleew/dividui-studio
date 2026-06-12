@@ -1,0 +1,119 @@
+---
+---
+<section class="manifesto-section py-24 md:py-36 border-b border-border">
+  <div class="container">
+    <div class="manifesto-grid">
+
+      <div class="manifesto-label">
+        <span>Manifesto</span>
+      </div>
+
+      <div class="manifesto-body">
+        <h2 class="manifesto-title">
+          Non un'agenzia.<br/>
+          Non un freelance.<br/>
+          <em>Una rete.</em>
+        </h2>
+
+        <div class="manifesto-text">
+          <p>
+            Crediamo che la qualità arrivi dalla specializzazione. Per questo non siamo un team
+            generalista ma un collettivo di professionisti verticali —
+            <strong>design, sviluppo, video, social, advertising</strong> —
+            ognuno il migliore nel suo mestiere.
+          </p>
+          <p>
+            Per ogni progetto componiamo la squadra su misura: solo le competenze che servono,
+            nessuna struttura pesante in mezzo. Offerte personalizzate, non pacchetti preconfezionati.
+          </p>
+        </div>
+
+        <a href="#contact-form" class="manifesto-cta">
+          Parliamone &rarr;
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  .manifesto-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    .manifesto-grid {
+      grid-template-columns: 160px 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+  }
+
+  .manifesto-label {
+    padding-top: 0.5rem;
+  }
+
+  .manifesto-label span {
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 500;
+    opacity: 0.35;
+  }
+
+  .manifesto-title {
+    font-family: var(--font-family-sans);
+    font-size: clamp(2.4rem, 5vw, 4.5rem);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0 0 2.5rem;
+    color: var(--color-foreground);
+  }
+
+  .manifesto-title em {
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  .manifesto-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-bottom: 2.5rem;
+    max-width: 620px;
+  }
+
+  .manifesto-text p {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    font-weight: 300;
+    margin: 0;
+    color: color-mix(in oklab, var(--color-foreground) 70%, transparent);
+  }
+
+  .manifesto-text strong {
+    font-weight: 500;
+    color: var(--color-foreground);
+  }
+
+  .manifesto-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-foreground);
+    text-decoration: none;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 2px;
+    transition: opacity 0.2s;
+  }
+
+  .manifesto-cta:hover {
+    opacity: 0.5;
+  }
+</style>

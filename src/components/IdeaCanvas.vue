@@ -49,6 +49,28 @@
       />
     </transition-group>
 
+    <!-- Write Prompt overlay -->
+    <div v-if="showPromptInput" class="topic-overlay" @click.self="showPromptInput = false">
+      <div class="topic-modal prompt-modal">
+        <h3>Scrivi un prompt</h3>
+        <p class="topic-sub">Descrivi un caso specifico: il sistema genera un'idea su misura.</p>
+        <textarea
+          ref="promptTextareaRef"
+          v-model="promptText"
+          class="prompt-textarea"
+          placeholder="es. sneakers per adolescenti ribelli, app di meditazione per manager stressati…"
+          rows="3"
+          @keydown.enter.prevent="submitPrompt"
+        ></textarea>
+        <div class="prompt-actions">
+          <button class="prompt-submit" @click="submitPrompt" :disabled="!promptText.trim()">
+            Genera idea →
+          </button>
+          <button class="topic-close" @click="showPromptInput = false">Annulla</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Topic selector overlay -->
     <div v-if="showTopicSelector" class="topic-overlay" @click.self="showTopicSelector = false">
       <div class="topic-modal">
@@ -76,10 +98,13 @@
 
     <!-- Pinned section -->
     <div v-if="pinnedIdeas.length > 0" class="pinned-section">
-      <h3>📌 Pinnate</h3>
+      <h3>Salvate</h3>
       <div class="pinned-list">
         <div v-for="(pinned, i) in pinnedIdeas" :key="i" class="pinned-card">
-          <strong>{{ pinned.idea.prodotto }}</strong>
+          <div class="pinned-card-header">
+            <strong>{{ pinned.idea.prodotto }}</strong>
+            <button class="pinned-unpin-btn" @click="unpinFromList(i)" aria-label="Rimuovi pin">♥</button>
+          </div>
           <p>{{ pinned.idea.concept }}</p>
         </div>
       </div>
@@ -98,6 +123,7 @@ import {
   getNextConceptSet,
   getConceptByDomain,
   remixConcept,
+  CONCEPT_SETS,
   type ConceptSet,
   type Idea
 } from '../lib/concepts-data';
@@ -109,12 +135,65 @@ import { DOMINI } from '../lib/semantic-axes';
 const currentSet = ref<ConceptSet | null>(null);
 const isGenerating = ref(false);
 const showTopicSelector = ref(false);
+const showPromptInput = ref(false);
+const promptText = ref('');
+const promptTextareaRef = ref<HTMLTextAreaElement | null>(null);
 const showHearts = ref(false);
 const toastMessage = ref<string>('');
 const pinnedIds = ref<Set<string>>(new Set());
 const pinnedIdeas = ref<Array<{ idea: Idea; setId: string; index: number }>>([]);
 
 const domini = DOMINI;
+
+// ============================================
+// UI HELPERS & PERSISTENCE  (defined first — used by all action fns)
+// ============================================
+function delay(ms: number) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
+function showToast(msg: string) {
+  toastMessage.value = msg;
+  setTimeout(() => { toastMessage.value = ''; }, 2500);
+}
+
+function persistPinned() {
+  localStorage.setItem('dividui-pinned', JSON.stringify({
+    ids: Array.from(pinnedIds.value),
+    ideas: pinnedIdeas.value
+  }));
+}
+
+function triggerHeartsAnimation() {
+  showHearts.value = true;
+  setTimeout(() => { showHearts.value = false; }, 2000);
+}
+
+function getHeartStyle(_n: number) {
+  const left = Math.random() * 100;
+  const d = Math.random() * 0.5;
+  const duration = 1.5 + Math.random() * 0.8;
+  const size = 1 + Math.random() * 1.5;
+  return {
+    left: `${left}%`,
+    animationDelay: `${d}s`,
+    animationDuration: `${duration}s`,
+    fontSize: `${size}rem`
+  };
+}
+
+// ============================================
+// UNPIN FROM LIST
+// ============================================
+function unpinFromList(listIndex: number) {
+  const pinned = pinnedIdeas.value[listIndex];
+  if (!pinned) return;
+  const ideaId = pinned.setId + '-' + pinned.index;
+  pinnedIds.value.delete(ideaId);
+  pinnedIdeas.value.splice(listIndex, 1);
+  persistPinned();
+  showToast('Rimossa dai salvati');
+}
 
 // ============================================
 // LOAD SAVED FROM LOCALSTORAGE
@@ -139,35 +218,56 @@ onUnmounted(() => {
 });
 
 // ============================================
+// WRITE PROMPT
+// ============================================
+function openWritePrompt() {
+  promptText.value = '';
+  showPromptInput.value = true;
+  setTimeout(() => { promptTextareaRef.value?.focus(); }, 80);
+}
+
+async function submitPrompt() {
+  const query = promptText.value.trim();
+  if (!query) return;
+  showPromptInput.value = false;
+  isGenerating.value = true;
+  await delay(700);
+  const lower = query.toLowerCase();
+  const words = lower.split(/\s+/).filter(w => w.length > 2);
+  const scored = CONCEPT_SETS.map(set => {
+    const haystack = [
+      set.dominio, set.operazione, set.vincolo,
+      ...set.ideas.flatMap(i => [i.prodotto, i.concept])
+    ].join(' ').toLowerCase();
+    const score = words.reduce((acc, w) => acc + (haystack.includes(w) ? 1 : 0), 0);
+    return { set, score };
+  }).sort((a, b) => b.score - a.score);
+  currentSet.value = scored[0].score > 0 ? scored[0].set : getRandomConceptSet();
+  isGenerating.value = false;
+  showToast(`Idea da: "${query.slice(0, 40)}${query.length > 40 ? '…' : ''}"`);
+}
+
+function resetIdea() {
+  currentSet.value = null;
+  isGenerating.value = false;
+  showToast('Reset');
+}
+
+// ============================================
 // KEY HANDLER
 // ============================================
 function handleKeyPress(e: CustomEvent) {
   const action = e.detail.action;
   switch (action) {
-    case 'comboIdea':
-      generateNew();
-      break;
-    case 'nextIdea':
-      generateNext();
-      break;
-    case 'topic':
-      showTopicSelector.value = true;
-      break;
-    case 'remix':
-      doRemix();
-      break;
-    case 'send':
-      shareCurrentSet();
-      break;
-    case 'save':
-      saveCurrentSet();
-      break;
-    case 'heart':
-      pinAllCurrent();
-      break;
-    case 'aiMode':
-      aiModeRandom();
-      break;
+    case 'writePrompt':    openWritePrompt(); break;
+    case 'nextIdea':       generateNext(); break;
+    case 'topic':          showTopicSelector.value = true; break;
+    case 'remix':          doRemix(); break;
+    case 'send':           shareCurrentSet(); break;
+    case 'save':           saveCurrentSet(); break;
+    case 'heart':          pinAllCurrent(); break;
+    case 'reset':          resetIdea(); break;
+    case 'aiMode':         aiModeRandom(); break;
   }
 }
 
@@ -328,45 +428,6 @@ async function doShare(text: string) {
   }
 }
 
-// ============================================
-// PERSISTENCE
-// ============================================
-function persistPinned() {
-  localStorage.setItem('dividui-pinned', JSON.stringify({
-    ids: Array.from(pinnedIds.value),
-    ideas: pinnedIdeas.value
-  }));
-}
-
-// ============================================
-// UI HELPERS
-// ============================================
-function delay(ms: number) {
-  return new Promise(r => setTimeout(r, ms));
-}
-
-function showToast(msg: string) {
-  toastMessage.value = msg;
-  setTimeout(() => { toastMessage.value = ''; }, 2500);
-}
-
-function triggerHeartsAnimation() {
-  showHearts.value = true;
-  setTimeout(() => { showHearts.value = false; }, 2000);
-}
-
-function getHeartStyle(_n: number) {
-  const left = Math.random() * 100;
-  const delay = Math.random() * 0.5;
-  const duration = 1.5 + Math.random() * 0.8;
-  const size = 1 + Math.random() * 1.5;
-  return {
-    left: `${left}%`,
-    animationDelay: `${delay}s`,
-    animationDuration: `${duration}s`,
-    fontSize: `${size}rem`
-  };
-}
 </script>
 
 <style scoped>
@@ -375,7 +436,7 @@ function getHeartStyle(_n: number) {
   width: 100%;
   padding: 3rem 2rem;
   min-height: 60vh;
-  font-family: 'Host Grotesk', system-ui, sans-serif;
+  font-family: var(--font-family-sans);
   color: #fff;
 }
 
@@ -407,7 +468,7 @@ function getHeartStyle(_n: number) {
 }
 
 .param-value {
-  font-family: 'Host Grotesk', system-ui, sans-serif;
+  font-family: var(--font-family-sans);
   font-style: italic;
   font-size: 1.1rem;
   font-weight: 300;
@@ -426,7 +487,7 @@ function getHeartStyle(_n: number) {
 }
 
 .empty-title {
-  font-family: 'Host Grotesk', system-ui, sans-serif;
+  font-family: var(--font-family-sans);
   font-size: 1.5rem;
   font-weight: 300;
   margin: 0 0 0.5rem;
@@ -510,22 +571,25 @@ function getHeartStyle(_n: number) {
 }
 
 .topic-modal {
-  background: var(--bg, #FAFAF7);
+  background: #111;
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 16px;
   padding: 2rem;
   max-width: 600px;
   width: 100%;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7);
+  color: #fff;
 }
 
 .topic-modal h3 {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: var(--font-family-sans);
   font-size: 1.75rem;
   margin: 0 0 0.25rem;
+  color: #fff;
 }
 
 .topic-sub {
-  opacity: 0.6;
+  color: rgba(255,255,255,0.45);
   font-size: 0.875rem;
   margin: 0 0 1.5rem;
 }
@@ -538,8 +602,8 @@ function getHeartStyle(_n: number) {
 }
 
 .topic-btn {
-  background: white;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 12px;
   padding: 1rem 0.5rem;
   cursor: pointer;
@@ -549,12 +613,13 @@ function getHeartStyle(_n: number) {
   gap: 0.5rem;
   transition: all 0.2s ease;
   font-family: inherit;
+  color: #fff;
 }
 
 .topic-btn:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.25);
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-  border-color: rgba(0, 0, 0, 0.2);
 }
 
 .topic-emoji {
@@ -565,22 +630,25 @@ function getHeartStyle(_n: number) {
   font-size: 0.75rem;
   font-weight: 500;
   text-transform: lowercase;
+  color: rgba(255,255,255,0.75);
 }
 
 .topic-close {
   width: 100%;
   padding: 0.75rem;
   background: transparent;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255,255,255,0.12);
   border-radius: 8px;
   cursor: pointer;
   font-family: inherit;
   font-size: 0.875rem;
-  transition: background 0.2s;
+  color: rgba(255,255,255,0.5);
+  transition: all 0.2s;
 }
 
 .topic-close:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(255,255,255,0.05);
+  color: #fff;
 }
 
 /* ============== HEARTS ANIMATION ============== */
@@ -622,7 +690,7 @@ function getHeartStyle(_n: number) {
 }
 
 .pinned-section h3 {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: var(--font-family-sans);
   font-size: 1.5rem;
   margin: 0 0 1rem;
 }
@@ -641,16 +709,103 @@ function getHeartStyle(_n: number) {
   font-size: 0.875rem;
 }
 
-.pinned-card strong {
-  display: block;
+.pinned-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
   margin-bottom: 0.5rem;
+}
+
+.pinned-card-header strong {
   font-size: 0.95rem;
+  line-height: 1.3;
+}
+
+.pinned-unpin-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #FF4D4D;
+  padding: 0;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: transform 0.2s, opacity 0.2s;
+  opacity: 0.7;
+}
+
+.pinned-unpin-btn:hover {
+  opacity: 1;
+  transform: scale(1.2);
 }
 
 .pinned-card p {
   margin: 0;
   opacity: 0.85;
   line-height: 1.5;
+}
+
+/* ============== PROMPT MODAL ============== */
+.prompt-modal {
+  max-width: 480px;
+}
+
+.prompt-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.875rem 1rem;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  resize: none;
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  margin-bottom: 1rem;
+  transition: border-color 0.2s;
+}
+
+.prompt-textarea:focus {
+  outline: none;
+  border-color: #6B5BFF;
+  box-shadow: 0 0 0 3px rgba(107, 91, 255, 0.15);
+}
+
+.prompt-textarea::placeholder {
+  color: rgba(255,255,255,0.25);
+  font-style: italic;
+}
+
+.prompt-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.prompt-submit {
+  flex: 1;
+  padding: 0.75rem 1.25rem;
+  background: #6B5BFF;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.prompt-submit:hover:not(:disabled) {
+  background: #5a4ae0;
+  transform: translateY(-1px);
+}
+
+.prompt-submit:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 /* ============== TOAST ============== */

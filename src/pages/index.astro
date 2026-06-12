@@ -7,17 +7,18 @@ import QualityPromise from '../components/QualityPromise.astro';
 import EditorialGrid from '../components/EditorialGrid.astro';
 import ContactForm from '../components/ContactForm.astro';
 import Footer from '../components/Footer.astro';
+import VideoSection from '../components/VideoSection.astro';
 
 const marqueeItems = [
   { label: 'Dividui® — Studio creativo indipendente', href: '#' },
-  { label: 'Where dialogue creates value', href: '#' },
-  { label: 'Independent minds. Shared craft.', href: '#' },
+  { label: 'Più individui. Un solo brand.', href: '#' },
+  { label: 'Branding · Web · Video · Social · Advertising', href: '#' },
 ];
 ---
 
 <Layout
-  title="Dividui® Studio"
-  description="Independent creative studio born from the collaboration of freelances. Where dialogue creates value."
+  title="Dividui Studio"
+  description="Una rete di freelance verticali che costruisce identità, esperienze digitali e contenuti. Diamo forma ai brand e li rendiamo impossibili da ignorare."
 >
   <Hero />
 
@@ -30,6 +31,7 @@ const marqueeItems = [
   </section>
 
   <Marquee items={marqueeItems} />
+  <VideoSection />
   <QualitySection />
   <EditorialGrid />
   <QualityPromise />

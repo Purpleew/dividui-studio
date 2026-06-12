@@ -7,9 +7,9 @@
         class="pin-btn"
         :class="{ active: isPinned }"
         @click="$emit('pin')"
-        :aria-label="isPinned ? 'Spinna idea' : 'Pinna idea'"
+        :aria-label="isPinned ? 'Rimuovi pin' : 'Pinna idea'"
       >
-        {{ isPinned ? '★' : '☆' }}
+        {{ isPinned ? '♥' : '♡' }}
       </button>
     </header>
 
@@ -51,19 +51,18 @@ defineEmits<{
 
 <style scoped>
 .idea-card {
-  font-family: 'Host Grotesk', system-ui, sans-serif;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  font-family: var(--font-family-sans);
+  background: #111;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   padding: 1.5rem;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: border-color 0.2s ease, transform 0.2s ease;
   display: flex;
   flex-direction: column;
   gap: 1rem;
   position: relative;
   color: #fff;
+  contain: layout style;
 }
 
 .idea-card:hover {
@@ -74,11 +73,9 @@ defineEmits<{
 }
 
 .idea-card.is-pinned {
-  background: rgba(107, 91, 255, 0.18);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-color: rgba(107, 91, 255, 0.45);
-  box-shadow: 0 0 32px rgba(107, 91, 255, 0.15);
+  background: #1a0f0f;
+  border-color: rgba(255, 77, 77, 0.35);
+  box-shadow: 0 0 24px rgba(255, 77, 77, 0.08);
 }
 
 /* Header */
@@ -99,30 +96,28 @@ defineEmits<{
 .pin-btn {
   background: transparent;
   border: none;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   cursor: pointer;
-  color: white;
-  opacity: 0.3;
+  color: rgba(255, 255, 255, 0.3);
   transition: all 0.2s;
   padding: 0;
   line-height: 1;
 }
 
 .pin-btn:hover {
-  opacity: 1;
-  transform: scale(1.15);
-  color: rgba(107, 91, 255, 0.8);
+  color: #FF4D4D;
+  transform: scale(1.2);
 }
 
 .pin-btn.active {
-  opacity: 1;
+  color: #FF4D4D;
   transform: scale(1.15);
-  color: #6B5BFF;
+  filter: drop-shadow(0 0 6px rgba(255, 77, 77, 0.5));
 }
 
 /* Title */
 .card-title {
-  font-family: 'Host Grotesk', system-ui, sans-serif;
+  font-family: var(--font-family-sans);
   font-size: 1.2rem;
   font-weight: 500;
   line-height: 1.25;
@@ -186,7 +181,7 @@ defineEmits<{
   justify-content: center;
   gap: 0.375rem;
   transition: all 0.2s;
-  font-family: 'Host Grotesk', system-ui, sans-serif;
+  font-family: var(--font-family-sans);
   color: rgba(255, 255, 255, 0.5);
   font-weight: 400;
 }
