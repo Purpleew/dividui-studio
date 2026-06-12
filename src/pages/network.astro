@@ -1,0 +1,137 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Footer from '../components/Footer.astro';
+
+const team = [
+  { name: 'Sara Ferrari', role: 'Creative Director', img: '/images/network/sara-ferrari.jpg' },
+  { name: 'Marco Rossi', role: 'Lead Designer', img: null },
+  { name: 'Giulia Bianchi', role: 'Frontend Developer', img: null },
+  { name: 'Luca Conti', role: 'Brand Strategist', img: null },
+  { name: 'Elena Mori', role: 'Motion Designer', img: null },
+  { name: 'Andrea Ricci', role: 'Full Stack Developer', img: null },
+];
+
+const partners = [
+  { name: 'Laba', role: 'Partner Studio', img: null },
+  { name: 'Aria Studios', role: 'Partner Studio', img: null },
+  { name: 'Incode', role: 'Partner Studio', img: null },
+];
+---
+
+<Layout
+  title="Network — Dividui® Studio"
+  description="Le menti indipendenti dietro Dividui® Studio."
+>
+  <section class="pt-40 pb-4 overflow-hidden">
+    <div class="container mb-16">
+      <h1 class="font-light tracking-tighter text-[clamp(3rem,8vw,7rem)] leading-none">Network</h1>
+    </div>
+
+    <!-- Team -->
+    <div class="container mb-6">
+      <p class="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">Team</p>
+    </div>
+    <div class="slider-wrap" style="overflow:hidden;margin-bottom:4rem;">
+      <ul class="slider-ul" style="display:flex;gap:1rem;padding:0 5vw 1.5rem;will-change:transform;cursor:grab;user-select:none;">
+        {team.map(m => (
+          <li class="relative" style="flex:none;width:clamp(200px,26vw,320px);">
+            <div class="member" style="position:relative;overflow:hidden;aspect-ratio:4/5;">
+              <div class="media-container" style="position:absolute;inset:0;pointer-events:none;will-change:transform;">
+                {m.img ? (
+                  <img src={m.img} alt={m.name} draggable="false" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" />
+                ) : (
+                  <div style="width:100%;height:100%;display:flex;align-items:flex-end;padding:1.25rem;background-color:color-mix(in oklab, var(--color-foreground) 6%, transparent);">
+                    <span style="font-size:clamp(5rem,14vw,10rem);font-weight:300;line-height:0.85;color:color-mix(in oklab, var(--color-foreground) 9%, transparent);user-select:none;">{m.name.charAt(0)}</span>
+                  </div>
+                )}
+              </div>
+              <h3 style="position:absolute;top:1.25rem;left:1.25rem;z-index:1;font-size:clamp(0.9rem,1.4vw,1.1rem);font-weight:300;letter-spacing:-0.01em;line-height:1.2;color:#000;">{m.name}</h3>
+              <p style="position:absolute;bottom:1.25rem;left:1.25rem;z-index:1;font-size:0.9rem;font-weight:300;color:#000;">{m.role}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <!-- Partner -->
+    <div class="container mb-6">
+      <p class="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">Partner</p>
+    </div>
+    <div class="slider-wrap" style="overflow:hidden;margin-bottom:2rem;">
+      <ul class="slider-ul" style="display:flex;gap:1rem;padding:0 5vw 1.5rem;will-change:transform;cursor:grab;user-select:none;">
+        {partners.map(m => (
+          <li class="relative" style="flex:none;width:clamp(200px,26vw,320px);">
+            <div class="member" style="position:relative;overflow:hidden;aspect-ratio:4/5;">
+              <div class="media-container" style="position:absolute;inset:0;pointer-events:none;will-change:transform;">
+                {m.img ? (
+                  <img src={m.img} alt={m.name} draggable="false" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" />
+                ) : (
+                  <div style="width:100%;height:100%;display:flex;align-items:flex-end;padding:1.25rem;background-color:color-mix(in oklab, var(--color-foreground) 6%, transparent);">
+                    <span style="font-size:clamp(5rem,14vw,10rem);font-weight:300;line-height:0.85;color:color-mix(in oklab, var(--color-foreground) 9%, transparent);user-select:none;">{m.name.charAt(0)}</span>
+                  </div>
+                )}
+              </div>
+              <h3 style="position:absolute;top:1.25rem;left:1.25rem;z-index:1;font-size:clamp(0.9rem,1.4vw,1.1rem);font-weight:300;letter-spacing:-0.01em;line-height:1.2;color:#000;">{m.name}</h3>
+              <p style="position:absolute;bottom:1.25rem;left:1.25rem;z-index:1;font-size:0.9rem;font-weight:300;color:#000;">{m.role}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+<script>
+  function initSlider(wrap: HTMLElement) {
+    const ul = wrap.querySelector<HTMLElement>('.slider-ul')!;
+    const items = ul.querySelectorAll<HTMLElement>('li');
+
+    let currentX = 0;
+    let targetX = 0;
+    let startX = 0;
+    let isDragging = false;
+
+    function getMinX() {
+      return -(ul.scrollWidth - window.innerWidth + window.innerWidth * 0.05);
+    }
+
+    function updateParallax() {
+      const vcx = window.innerWidth / 2;
+      items.forEach(item => {
+        const rect = item.getBoundingClientRect();
+        const progress = (rect.left + rect.width / 2 - vcx) / window.innerWidth;
+        const mc = item.querySelector<HTMLElement>('.media-container');
+        if (mc) mc.style.transform = `translateX(${-progress * 18}%) scale(1.12) rotate(${progress * 3}deg)`;
+      });
+    }
+
+    function tick() {
+      currentX += (targetX - currentX) * 0.08;
+      ul.style.transform = `translate3d(${currentX}px, 0, 0)`;
+      updateParallax();
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    wrap.addEventListener('mousedown', e => {
+      isDragging = true;
+      startX = e.clientX - currentX;
+      ul.style.cursor = 'grabbing';
+    });
+    window.addEventListener('mouseup', () => { isDragging = false; ul.style.cursor = 'grab'; });
+    window.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      targetX = Math.min(0, Math.max(getMinX(), e.clientX - startX));
+    });
+
+    let touchStartX = 0;
+    wrap.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX - currentX; }, { passive: true });
+    wrap.addEventListener('touchmove', e => {
+      targetX = Math.min(0, Math.max(getMinX(), e.touches[0].clientX - touchStartX));
+    }, { passive: true });
+  }
+
+  document.querySelectorAll<HTMLElement>('.slider-wrap').forEach(initSlider);
+</script>

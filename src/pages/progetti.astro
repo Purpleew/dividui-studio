@@ -7,58 +7,89 @@ const projects = [
     title: 'The Blue Edit',
     category: 'Brand Identity',
     year: '2024',
-    description: 'A visual capsule played entirely in shades of blue — the colour of depth, calm, and the infinite.',
-    accent: '#1a3a5c',
+    description: "Una capsule visiva giocata interamente nelle sfumature del blu — il colore della profondità, della calma e dell'infinito.",
+    images: [
+      null, null, null, null,
+    ],
   },
   {
     title: 'Forma Libera',
     category: 'Editorial Design',
     year: '2024',
-    description: 'An editorial project exploring the relationship between white space and typography — between silence and voice.',
-    accent: '#2e2e2e',
+    description: 'Un progetto editoriale che esplora il rapporto tra spazio bianco e tipografia — tra silenzio e voce.',
+    images: [
+      null, null, null,
+    ],
   },
   {
     title: 'Orizzonte',
-    category: 'Digital Product',
+    category: 'Prodotto Digitale',
     year: '2023',
-    description: 'A digital platform connecting independent creatives with brands in search of authenticity.',
-    accent: '#3d2b1f',
+    description: 'Una piattaforma digitale che connette creativi indipendenti con brand in cerca di autenticità.',
+    images: [
+      null, null, null, null,
+    ],
   },
+];
+
+// pattern: stretto, largo, medio, stretto, largo, medio — Y fissa, X varia
+const widths = [
+  'clamp(180px,16vw,240px)',   // stretto — verticale
+  'clamp(420px,48vw,640px)',   // largo   — orizzontale
+  'clamp(280px,30vw,400px)',   // medio
+  'clamp(200px,18vw,260px)',   // stretto
+  'clamp(460px,52vw,680px)',   // largo
+  'clamp(260px,28vw,380px)',   // medio
 ];
 ---
 
 <Layout
-  title="Projects — Dividui® Studio"
-  description="Selected work by Dividui® Studio. Brand identity, editorial design, and digital products — made with craft and intention."
+  title="Progetti — Dividui® Studio"
+  description="Il lavoro di Dividui® Studio. Brand identity, editorial design e prodotti digitali — fatti con cura e intenzione."
 >
   <section class="pt-40 pb-24">
-    <div class="container">
-      <p class="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">/ Selected work</p>
-      <h1 class="font-light tracking-tighter text-[clamp(3rem,8vw,7rem)] leading-none mb-20">Projects</h1>
+    <div class="container mb-16">
+      <h1 class="font-light tracking-tighter text-[clamp(3rem,8vw,7rem)] leading-none">Progetti</h1>
     </div>
 
     {projects.map((p, i) => (
       <div class="border-t border-border">
-        <div class="container py-16 md:py-24">
-          <div class="grid md:grid-cols-12 gap-8 items-start">
-            <div class="md:col-span-1 text-sm text-muted-foreground font-mono">{String(i + 1).padStart(2, '0')}</div>
-
-            <div class="md:col-span-3">
-              <h2 class="font-light text-3xl md:text-4xl tracking-tight mb-3">{p.title}</h2>
-              <p class="text-sm text-muted-foreground mb-1">{p.category}</p>
-              <p class="text-sm text-muted-foreground">{p.year}</p>
-              <p class="mt-6 text-base leading-relaxed text-muted-foreground max-w-xs">{p.description}</p>
-              <a href="#" class="inline-flex items-center gap-2 mt-8 text-sm font-medium border-b border-foreground pb-0.5 hover:opacity-50 transition-opacity">
-                View project <span aria-hidden>&rarr;</span>
+        <div class="container py-12">
+          <div class="grid md:grid-cols-12 gap-6 items-start mb-10">
+            <div class="md:col-span-1 text-sm text-muted-foreground font-mono pt-1">{String(i + 1).padStart(2, '0')}</div>
+            <div class="md:col-span-4">
+              <h2 class="font-light text-3xl md:text-4xl tracking-tight mb-2">{p.title}</h2>
+              <p class="text-sm text-muted-foreground mb-1">{p.category} — {p.year}</p>
+              <p class="mt-4 text-base leading-relaxed text-muted-foreground max-w-sm">{p.description}</p>
+              <a href="#" class="inline-flex items-center gap-2 mt-6 text-sm font-medium border-b border-foreground pb-0.5 hover:opacity-50 transition-opacity">
+                Scopri il progetto &rarr;
               </a>
             </div>
-
-            <div class="md:col-span-8 grid grid-cols-12 gap-4 items-end">
-              <div class="col-span-4 aspect-[3/4]" style={`background-color: ${p.accent}18`}></div>
-              <div class="col-span-8 aspect-[4/3]" style={`background-color: ${p.accent}10`}></div>
-              <div class="col-span-5 col-start-4 aspect-square -mt-12" style={`background-color: ${p.accent}14`}></div>
-            </div>
           </div>
+        </div>
+
+        <!-- Gallery slider -->
+        <div class="proj-slider-wrap" style="overflow:hidden;padding-bottom:2rem;">
+          <ul class="proj-slider-ul" style="display:flex;gap:1rem;padding:0 5vw;will-change:transform;cursor:grab;user-select:none;align-items:stretch;">
+            {p.images.map((img, j) => {
+              const width = widths[j % widths.length];
+              return (
+                <li style={`flex:none;width:${width};height:clamp(300px,50vh,600px);`}>
+                  <div class="proj-img-card" style="position:relative;overflow:hidden;height:100%;">
+                    <div class="media-container" style="position:absolute;inset:0;will-change:transform;">
+                      {img ? (
+                        <img src={img} alt={p.title} draggable="false" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" />
+                      ) : (
+                        <div style="width:100%;height:100%;background-color:color-mix(in oklab, var(--color-foreground) 5%, transparent);display:flex;align-items:center;justify-content:center;">
+                          <span style="font-family:monospace;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.2em;color:color-mix(in oklab, var(--color-foreground) 25%, transparent);">img</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       </div>
     ))}
@@ -68,3 +99,45 @@ const projects = [
 
   <Footer />
 </Layout>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.proj-slider-wrap').forEach(wrap => {
+    const ul = wrap.querySelector<HTMLElement>('.proj-slider-ul')!;
+    const items = ul.querySelectorAll<HTMLElement>('li');
+
+    let currentX = 0, targetX = 0, startX = 0, isDragging = false;
+
+    const getMinX = () => -(ul.scrollWidth - window.innerWidth + window.innerWidth * 0.05);
+
+    function updateParallax() {
+      const vcx = window.innerWidth / 2;
+      items.forEach(item => {
+        const rect = item.getBoundingClientRect();
+        const progress = (rect.left + rect.width / 2 - vcx) / window.innerWidth;
+        const mc = item.querySelector<HTMLElement>('.media-container');
+        if (mc) mc.style.transform = `translateX(${-progress * 14}%) scale(1.1) rotate(${progress * 1.5}deg)`;
+      });
+    }
+
+    function tick() {
+      currentX += (targetX - currentX) * 0.08;
+      ul.style.transform = `translate3d(${currentX}px, 0, 0)`;
+      updateParallax();
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    wrap.addEventListener('mousedown', e => { isDragging = true; startX = e.clientX - currentX; ul.style.cursor = 'grabbing'; });
+    window.addEventListener('mouseup', () => { isDragging = false; ul.style.cursor = 'grab'; });
+    window.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      targetX = Math.min(0, Math.max(getMinX(), e.clientX - startX));
+    });
+
+    let touchStartX = 0;
+    wrap.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX - currentX; }, { passive: true });
+    wrap.addEventListener('touchmove', e => {
+      targetX = Math.min(0, Math.max(getMinX(), e.touches[0].clientX - touchStartX));
+    }, { passive: true });
+  });
+</script>
