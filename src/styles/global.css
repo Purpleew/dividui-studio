@@ -23,7 +23,7 @@
   --color-input: hsl(0 0% 90%);
   --color-muted: hsl(0 0% 95%);
   --color-muted-foreground: hsl(0 0% 40%);
-  --color-accent: hsl(24 95% 53%);
+  --color-accent: #7c3aed;
   --color-accent-foreground: hsl(0 0% 100%);
   --color-primary: hsl(0 0% 6%);
   --color-primary-foreground: hsl(0 0% 100%);
