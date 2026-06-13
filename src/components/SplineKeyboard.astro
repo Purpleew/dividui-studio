@@ -91,6 +91,21 @@
         // camera not found or API unavailable — no-op
       }
 
+      // On mobile, pull the camera back to zoom out
+      if (window.innerWidth < 768) {
+        try {
+          const cam =
+            app.camera ??
+            app.findObjectByName?.('Camera') ??
+            app.findObjectByName?.('camera');
+          if (cam?.position) {
+            cam.position.z += 2800;
+          }
+        } catch (e) {
+          // camera adjustment unavailable — no-op
+        }
+      }
+
       app.addEventListener('mouseDown', (e: any) => {
         const name: string = e?.target?.name?.toLowerCase() ?? '';
         handleSplineClick(name);
@@ -125,7 +140,9 @@
     display: block;
     background: transparent;
     --spline-viewer-bg: transparent;
+    touch-action: none;
   }
+
 
   .spline-loader {
     position: absolute;
